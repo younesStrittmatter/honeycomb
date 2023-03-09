@@ -49,29 +49,22 @@ const initParticipant = (participantId, studyId, startDate) => {
         });
 };
 
-const addAttempt = () => {
-    return db.collection('meta')
-        .doc('attempts')
+const updateMeta = async (study_id) => {
+    await db.collection('meta')
+        .doc(study_id)
         .update('attempts', firebase.firestore.FieldValue.increment(1))
-        .then(() => {
-            db.collection('meta')
-                .doc('attempts')
-                .get().then((doc) => {
-                    return doc.data()['attempts']
-                }
-            ).catch((error) => {
-                console.log(error)
-            })
-        })
+
+    let doc = await db.collection('meta')
+                .doc(study_id)
+                .get()
+    return doc.data()
 }
 
 // Add inidividual trials to db
 const addToFirebase = (data) => {
-    console.log(data)
     const participantId = data.participant_id;
     const studyId = data.study_id;
     const startDate = data.start_date
-
     db.collection(collectionName)
         .doc(studyId)
         .collection('participants')
@@ -87,7 +80,7 @@ export {
     collectionName,
     initParticipant,
     addToFirebase,
-    addAttempt
+    updateMeta
 };
 
 export default firebase;

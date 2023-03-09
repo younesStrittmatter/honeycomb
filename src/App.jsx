@@ -8,7 +8,7 @@ import Login from './components/Login'
 import JsPsychExperiment from './components/JsPsychExperiment'
 
 import { getProlificId, sleep } from './lib/utils'
-import {initParticipant, addToFirebase, addAttempt} from './firebase'
+import {initParticipant, addToFirebase, updateMeta} from './firebase'
 import { config, taskVersion, turkUniqueId } from './config/main'
 
 function App () {
@@ -33,8 +33,8 @@ function App () {
     return true
   }
   const firebaseValidation = async (participantId, studyId) => {
-    const attempts = await addAttempt()
-    console.log(attempts)
+    const meta = await updateMeta(studyId)
+    global.ATTEMPTS = meta['attempts']
     return initParticipant(participantId, studyId, startDate)
   }
 
